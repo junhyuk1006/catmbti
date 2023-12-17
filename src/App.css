@@ -1,0 +1,8 @@
+.App{
+    font-family: "DNFForgedBlade-Medium";
+}
+
+@font-face {
+    font-family: "DNFForgedBlade-Medium";
+    src: url(/src/assets/fonts/DNFForgedBlade-Medium.ttf);
+}
