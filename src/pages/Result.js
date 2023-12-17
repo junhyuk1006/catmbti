@@ -1,27 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Button from "react-bootstrap/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ResultData } from "../assets/data/resultdata";
 
 const Result = () =>{
     const navigate = useNavigate();
-    return ( 
-        <Wrapper>
-            <Header>예비집사 판별기</Header>
-            <Contents>
-                <Title>결과 보기</Title>
-                <LogoImage>
-                    <img src={ResultData[0].image} className="rounded-circle" width={350} height={350}></img>
-                </LogoImage>
-                <Desc>찰떡궁합인 고양이는 {ResultData[0].name}입니다.</Desc>
-                <Button style={{fontFamily:"DNFForgedBlade-Medium"}} onClick={()=>navigate("/")}>테스트 다시하기</Button>
-            </Contents>
-        </Wrapper>
+    const [SearchParams] = useSearchParams();
+    const mbti = SearchParams.get("mbti");
+    // 결과 객체
+    const [resultData,setResultData] = useState({});
+
+    useEffect(()=>{
+        const result = ResultData.find((s) => s.best === mbti);
+        setResultData(result);
+    },[mbti]);
+
+    return (
+        <Container>
+            <Header> 
+                <Wrapper>
+                    <Header>예비집사 판별기</Header>
+                    <Contents>
+                        <Title>결과 보기</Title>
+                        <LogoImage>
+                            <img src={resultData.image} className="rounded-circle" width={350} height={350}></img>
+                        </LogoImage>
+                        <Desc>찰떡궁합인 고양이는 {resultData.name}입니다.</Desc>
+                        <Button style={{fontFamily:"DNFForgedBlade-Medium"}} onClick={()=>navigate("/")}>테스트 다시하기</Button>
+                    </Contents>
+                </Wrapper>
+            </Header>
+        </Container>
        );
-}
+};
 
 export default Result;
+
+const Container = styled.div`
+    display: flex;
+    height: 120vh;
+    width: 100%;
+    background: #fffacd;
+    flex-direction : column;
+`
 
 const Wrapper = styled.div`
     height: 100vh;
@@ -29,6 +51,8 @@ const Wrapper = styled.div`
 `
 
 const Header = styled.div`
+    color : white;
+    background: #ffa07a;
     font-size: 40pt;
     display : flex;
     justify-content: center;
