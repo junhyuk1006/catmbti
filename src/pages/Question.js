@@ -1,16 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, ProgressBar } from "react-bootstrap";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import {QuestionData} from '../assets/data/questiondata'
 
+
 const Question = () =>{
+    const [qNo,setQNo] = useState(0);
+    const [total,setTotal] = useState([
+        {id:"EI",score:0},
+        {id:"SN",score:0},
+        {id:"TF",score:0},
+        {id:"JP",score:0},
+    ]);
+    const navigate = useNavigate();
+
+    const handleButton = (no,type) => {
+        const newScore = total.map((s) =>
+        s.id === type ? {id: s.id,score: s.score + no} : s
+        );
+        
+        setTotal(newScore);
+        // 다음문제
+        if(QuestionData.length !== qNo + 1){
+            setQNo(qNo+1);
+        } else{
+            // 결과 페이지
+            navigate("/result");
+        }
+    }
+    
     return(
         <Wrapper>
-            <ProgressBar striped variant="danger" now={80} style={{marginTop: '20px'}}/>
-            <Title>{QuestionData[0].title}</Title>
+            <ProgressBar striped variant="danger" now={(qNo/QuestionData.length)*100} style={{marginTop: '20px'}}/>
+            <Title>{QuestionData[qNo].title}</Title>
             <ButtonGroup>
-                <Button style={{width:'40%',minHeight: "200px", fontSize:"15pt"}}>{QuestionData[0].answera}</Button>
-                <Button style={{width:'40%',minHeight: "200px", fontSize:"15pt",marginLeft:"20px"}}>{QuestionData[0].answerb}</Button>
+                <Button onClick = {()=>handleButton(1,QuestionData[qNo].type)} style={{width:'40%',minHeight: "200px", fontSize:"15pt"}}>{QuestionData[qNo].answera}</Button>
+                <Button  onClick = {()=>handleButton(0,QuestionData[qNo].type)} style={{width:'40%',minHeight: "200px", fontSize:"15pt",marginLeft:"20px"}}>{QuestionData[qNo].answerb}</Button>
             </ButtonGroup>
         </Wrapper>
     );
